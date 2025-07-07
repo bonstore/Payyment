@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BONSKUY STORE</title>
+  <style>
+    body {
+      font-family: 'Courier Prime', monospace;
+      background: url('https://files.catbox.moe/brriz1.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .logo img {
+      width: 100px;
+      border-radius: 50%;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+
+    .qris-img {
+      width: 220px;
+      height: 220px;
+      background: white;
+      margin: 20px auto;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .payment-method {
+      margin: 10px 0;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .payment-method:hover {
+      background: #333;
+    }
+
+    .copy-btn {
+      color: #00ff99;
+    }
+
+    .location {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <img src="https://example.com/logo.png" alt="">
+    </div>
+    <h1>BONSKUY STORE</h1>
+    <p>Silakan Scan QRIS / Salin Payment Di Bawah</p>
+
+    <img class="qris-img" src="https://i.ibb.co.com/S4wYYfZH/IMG-20250330-000739.jpg" alt="QRIS Bonskuy">
+
+    <div class="payment-method" onclick="copyToClipboard('081234567890')">
+      Dana: <span class="copy-btn">085141316926</span>
+    </div>
+
+
+    <div class="location">Tegal, Jawa Tengah, Indonesia</div>
+  </div>
+
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Berhasil disalin: " + text);
+      });
+    }
+  </script>
+
+</body>
+</html>
