@@ -1,94 +1,298 @@
-<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BONSKUY STORE</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Payment Bonstore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+    rel="stylesheet"
+  />
   <style>
     body {
-      font-family: 'Courier Prime', monospace;
-      background: url('https://files.catbox.moe/brriz1.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      text-align: center;
-      padding: 50px;
+      font-family: "Roboto", sans-serif;
     }
-
-    .container {
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 15px;
-      padding: 30px;
-      max-width: 400px;
-      margin: auto;
+    /* Popup background */
+    .popup-bg {
+      background-color: rgba(0, 0, 0, 0.6);
     }
-
-    .logo img {
-      width: 100px;
-      border-radius: 50%;
+    /* Animation for popup */
+    @keyframes popupScale {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
-
-    h1 {
-      font-size: 24px;
-      margin: 10px 0;
-    }
-
-    .qris-img {
-      width: 220px;
-      height: 220px;
-      background: white;
-      margin: 20px auto;
-      display: block;
-      border-radius: 10px;
-    }
-
-    .payment-method {
-      margin: 10px 0;
-      background: #222;
-      padding: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .payment-method:hover {
-      background: #333;
-    }
-
-    .copy-btn {
-      color: #00ff99;
-    }
-
-    .location {
-      margin-top: 10px;
-      font-size: 13px;
+    .popup-content {
+      animation: popupScale 0.3s ease forwards;
     }
   </style>
 </head>
 <body>
+  <div
+    class="min-h-screen flex items-center justify-center px-4 relative"
+    style="background-color: transparent"
+  >
+    <img
+      alt="Cyberpunk cityscape with tall buildings, red glowing windows and signs, and elevated train tracks"
+      class="fixed inset-0 w-full h-full object-cover -z-10"
+      height="1200"
+      src="https://storage.googleapis.com/a1aa/image/e6a6c27c-5e26-4bb9-d542-5cbdc76c20f0.jpg"
+      width="600"
+    />
+    <div
+      class="bg-white bg-opacity-40 backdrop-blur-md rounded-3xl p-8 max-w-md w-full"
+    >
+      <h1
+        class="text-center text-black font-extrabold text-2xl md:text-3xl mb-8 tracking-widest"
+        style="font-family: 'Roboto', sans-serif; font-weight: 900; letter-spacing: 0.15em"
+      >
+        PAYMENT BONSTORE
+      </h1>
+      <form class="space-y-6" onsubmit="return false">
+        <select
+          id="paymentMethod"
+          class="w-full rounded-lg border-2 border-black bg-transparent px-4 py-3 text-black text-lg focus:outline-none"
+          style="font-family: 'Roboto', sans-serif; font-weight: 300"
+          aria-label="Pilih Metode Pembayaran"
+        >
+          <option value="" disabled selected>Pilih Metode Pembayaran</option>
+          <option value="dana">Dana</option>
+          <option value="qris">Qris</option>
+        </select>
 
-  <div class="container">
-    <div class="logo">
-      <img src="https://example.com/logo.png" alt="">
+        <input
+          id="danaNumber"
+          class="w-full rounded-lg border-2 border-black bg-transparent px-4 py-3 text-black placeholder-black text-lg focus:outline-none"
+          placeholder="No Dana:"
+          style="font-family: 'Roboto', sans-serif; font-weight: 300"
+          type="text"
+          readonly
+          aria-label="Nomor Dana"
+        />
+
+        <div class="flex items-center space-x-4">
+          <div
+            id="qrisBox"
+            class="w-28 h-28 rounded-lg border-2 border-black bg-transparent flex-shrink-0 flex items-center justify-center cursor-default overflow-hidden"
+            aria-label="Kotak QRIS"
+            tabindex="-1"
+            role="img"
+          >
+            <!-- QR code image will appear here -->
+          </div>
+          <p
+            class="text-black text-right text-base font-light"
+            style="font-family: 'Roboto', sans-serif"
+          >
+            Klik Qris Di Samping
+            <br />
+            Untuk Memperbesar Qris
+          </p>
+        </div>
+
+        <button
+          id="guideBtn"
+          class="mx-auto block rounded-md border-2 border-black bg-white bg-opacity-40 px-6 py-1 text-black text-base font-light flex items-center space-x-2"
+          style="font-family: 'Roboto', sans-serif"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="guidePopup"
+        >
+          <span>⚠️</span>
+          <span>Panduan</span>
+          <span>⚠️</span>
+        </button>
+      </form>
     </div>
-    <h1>BONSKUY STORE</h1>
-    <p>Silakan Scan QRIS / Salin Payment Di Bawah</p>
 
-    <img class="qris-img" src="https://i.ibb.co.com/S4wYYfZH/IMG-20250330-000739.jpg" alt="QRIS Bonskuy">
-
-    <div class="payment-method" onclick="copyToClipboard('081234567890')">
-      Dana: <span class="copy-btn">085141316926</span>
+    <!-- QRIS Popup -->
+    <div
+      id="qrisPopup"
+      class="fixed inset-0 flex items-center justify-center popup-bg hidden z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="qrisPopupTitle"
+      tabindex="-1"
+    >
+      <div
+        class="bg-white rounded-3xl p-6 max-w-sm w-full popup-content relative"
+        role="document"
+      >
+        <button
+          id="qrisCloseBtn"
+          class="absolute top-3 right-3 text-black text-2xl font-bold focus:outline-none"
+          aria-label="Close QRIS popup"
+        >
+          &times;
+        </button>
+        <h2
+          id="qrisPopupTitle"
+          class="text-center font-extrabold text-xl mb-4"
+          style="font-family: 'Roboto', sans-serif"
+        >
+          QRIS Pembayaran
+        </h2>
+        <img
+          id="qrisPopupImg"
+          src=""
+          alt="Kode QRIS untuk pembayaran Dana"
+          class="mx-auto w-64 h-64 object-contain rounded-lg"
+          draggable="false"
+        />
+      </div>
     </div>
 
-
-    <div class="location">Tegal, Jawa Tengah, Indonesia</div>
+    <!-- Guide Popup -->
+    <div
+      id="guidePopup"
+      class="fixed inset-0 flex items-center justify-center popup-bg hidden z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="guidePopupTitle"
+      tabindex="-1"
+    >
+      <div
+        class="bg-white rounded-3xl p-6 max-w-md w-full popup-content relative"
+        role="document"
+      >
+        <button
+          id="guideCloseBtn"
+          class="absolute top-3 right-3 text-black text-2xl font-bold focus:outline-none"
+          aria-label="Close guide popup"
+        >
+          &times;
+        </button>
+        <h2
+          id="guidePopupTitle"
+          class="text-center font-extrabold text-xl mb-4"
+          style="font-family: 'Roboto', sans-serif"
+        >
+          Panduan Pembayaran
+        </h2>
+        <div class="text-black text-base font-light" style="font-family: 'Roboto', sans-serif; line-height: 1.5;">
+          <p>1. Pilih metode pembayaran Dana atau QRIS pada dropdown di atas.</p>
+          <p>2. Jika memilih Dana, nomor Dana akan otomatis muncul di kolom No Dana.</p>
+          <p>3. Jika memilih QRIS, kode QR akan muncul di kotak persegi di samping.</p>
+          <p>4. Klik kode QR untuk memperbesar dan memudahkan pemindaian.</p>
+          <p>5. Klik tombol "Panduan" ini kapan saja untuk melihat instruksi ini kembali.</p>
+          <p>6. Pastikan pembayaran dilakukan sesuai instruksi untuk menghindari kesalahan.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Berhasil disalin: " + text);
-      });
-    }
-  </script>
+    // Data for Dana number and QRIS image URL
+    const danaNumber = "085141316926";
+    const qrisImageUrl =
+      "https://files.catbox.moe/xhzhis.jpg";
 
+    const paymentMethodSelect = document.getElementById("paymentMethod");
+    const danaNumberInput = document.getElementById("danaNumber");
+    const qrisBox = document.getElementById("qrisBox");
+    const qrisPopup = document.getElementById("qrisPopup");
+    const qrisPopupImg = document.getElementById("qrisPopupImg");
+    const qrisCloseBtn = document.getElementById("qrisCloseBtn");
+    const guideBtn = document.getElementById("guideBtn");
+    const guidePopup = document.getElementById("guidePopup");
+    const guideCloseBtn = document.getElementById("guideCloseBtn");
+
+    // Update UI based on payment method selection
+    function updatePaymentUI() {
+      const method = paymentMethodSelect.value;
+      if (method === "dana") {
+        danaNumberInput.value = danaNumber;
+        qrisBox.innerHTML = "";
+        qrisBox.classList.remove("cursor-pointer");
+        qrisBox.setAttribute("aria-disabled", "true");
+        qrisBox.tabIndex = -1;
+        qrisBox.setAttribute("role", "img");
+      } else if (method === "qris") {
+        danaNumberInput.value = "";
+        qrisBox.innerHTML = `<img src="${qrisImageUrl}" alt="Kode QRIS untuk pembayaran Dana" class="w-full h-full object-contain rounded-lg" draggable="false" />`;
+        qrisBox.classList.add("cursor-pointer");
+        qrisBox.removeAttribute("aria-disabled");
+        qrisBox.tabIndex = 0;
+        qrisBox.setAttribute("role", "button");
+      } else {
+        danaNumberInput.value = "";
+        qrisBox.innerHTML = "";
+        qrisBox.classList.remove("cursor-pointer");
+        qrisBox.setAttribute("aria-disabled", "true");
+        qrisBox.tabIndex = -1;
+        qrisBox.setAttribute("role", "img");
+      }
+    }
+
+    paymentMethodSelect.addEventListener("change", updatePaymentUI);
+
+    // Show QRIS popup with animation
+    function showQrisPopup() {
+      if (paymentMethodSelect.value !== "qris") return;
+      qrisPopupImg.src = qrisImageUrl;
+      qrisPopup.classList.remove("hidden");
+      qrisPopup.focus();
+    }
+
+    // Hide QRIS popup
+    function hideQrisPopup() {
+      qrisPopup.classList.add("hidden");
+      qrisPopupImg.src = "";
+      paymentMethodSelect.focus();
+    }
+
+    // Show guide popup
+    function showGuidePopup() {
+      guidePopup.classList.remove("hidden");
+      guidePopup.focus();
+    }
+
+    // Hide guide popup
+    function hideGuidePopup() {
+      guidePopup.classList.add("hidden");
+      guideBtn.focus();
+    }
+
+    // Event listeners
+    qrisBox.addEventListener("click", showQrisPopup);
+    qrisBox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        showQrisPopup();
+      }
+    });
+    qrisCloseBtn.addEventListener("click", hideQrisPopup);
+    guideBtn.addEventListener("click", showGuidePopup);
+    guideCloseBtn.addEventListener("click", hideGuidePopup);
+
+    // Close popups on outside click or Escape key
+    window.addEventListener("click", (e) => {
+      if (e.target === qrisPopup) {
+        hideQrisPopup();
+      }
+      if (e.target === guidePopup) {
+        hideGuidePopup();
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (!qrisPopup.classList.contains("hidden")) {
+          hideQrisPopup();
+        }
+        if (!guidePopup.classList.contains("hidden")) {
+          hideGuidePopup();
+        }
+      }
+    });
+
+    // Initialize UI on page load
+    updatePaymentUI();
+  </script>
 </body>
 </html>
